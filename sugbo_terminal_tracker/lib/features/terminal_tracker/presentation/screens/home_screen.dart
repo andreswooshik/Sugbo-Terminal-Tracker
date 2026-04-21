@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../domain/models/terminal_model.dart';
 import '../../domain/models/transit_route_model.dart';
+import '../../domain/providers/terminal_providers.dart'; // Import our new provider
 import '../widgets/greeting_card.dart';
 import '../widgets/alert_banner.dart';
 import '../widgets/status_card.dart';
@@ -9,62 +10,13 @@ import '../widgets/terminal_grid.dart';
 import '../widgets/route_list.dart';
 import '../widgets/custom_bottom_nav.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Dummy data matching the Figma design for the Terminal Grid
-    final List<Terminal> dummyTerminals = [
-      Terminal(
-        id: '1',
-        name: 'IT Park',
-        subtitle: 'BRT anchor',
-        estimatedWaitTime: '~3 min wait',
-        isFree: true,
-        statusColorHex: '#1A73E8',
-      ), // Blue dot
-      Terminal(
-        id: '2',
-        name: 'SM Seaside',
-        subtitle: 'BRT + MyBus',
-        estimatedWaitTime: '~3 min wait',
-        isFree: true,
-        statusColorHex: '#1DB954',
-      ), // Green dot
-      Terminal(
-        id: '3',
-        name: 'SM City',
-        subtitle: 'MyBus main hub',
-        estimatedWaitTime: '~3 min wait',
-        isFree: false,
-        statusColorHex: '#1DB954',
-      ),
-      Terminal(
-        id: '4',
-        name: 'Il Corso',
-        subtitle: 'BRT terminus',
-        estimatedWaitTime: '~3 min wait',
-        isFree: true,
-        statusColorHex: '#1A73E8',
-      ),
-      Terminal(
-        id: '5',
-        name: 'SM JMall',
-        subtitle: 'MyBus Mandaue',
-        estimatedWaitTime: '~3 min wait',
-        isFree: false,
-        statusColorHex: '#1DB954',
-      ),
-      Terminal(
-        id: '6',
-        name: 'Anjo World',
-        subtitle: 'Love Bus + MyBus',
-        estimatedWaitTime: '~3 min wait',
-        isFree: true,
-        statusColorHex: '#E91E63',
-      ), // Pink dot
-    ];
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the live stream of Terminal Ui Models from Supabase
+    final terminalsAsyncValue = ref.watch(terminalsStreamProvider);
 
     // Dummy data matching the Figma design for the Routes List
     final List<TransitRoute> dummyRoutes = [
@@ -82,7 +34,7 @@ class HomeScreen extends StatelessWidget {
         origin: 'Anjo World',
         destination: 'SM City',
         frequency: 'Every 20 min',
-        price: '₱50',
+        price: '?50',
       ),
       TransitRoute(
         id: '3',
@@ -90,7 +42,7 @@ class HomeScreen extends StatelessWidget {
         origin: 'SM Seaside',
         destination: 'SM JMall',
         frequency: 'Every 20 min',
-        price: '₱30',
+        price: '?30',
       ),
     ];
 
@@ -98,45 +50,82 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header text
-              const Text(
-                'Sugbo Tracker',
-                style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+          padding: const EdgeInsets.only(bottom: 100),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'SugboTracker',
+                      style: TextStyle(
+                        fontFamily: 'Righteous',
+                        color: AppColors.accentGreen,
+                        fontSize: 24,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.notifications_none,
+                          color: AppColors.textPrimary),
+                      onPressed: () {},
+                    )
+                  ],
                 ),
-              ),
-              const Text(
-                'Cebu transit · real-time',
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
-              ),
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-              // The components we built
-              const GreetingCard(),
-              const SizedBox(height: 16),
+                // The components we built
+                const GreetingCard(),
+                const SizedBox(height: 16),
 
-              const AlertBanner(),
-              const SizedBox(height: 16),
+                const AlertBanner(),
+                const SizedBox(height: 16),
 
-              const StatusCard(),
-              const SizedBox(height: 24),
+                const StatusCard(),
+                const SizedBox(height: 24),
 
-              // The Terminal Grid with our dummy data
-              TerminalGrid(terminals: dummyTerminals),
+                // Map the AsyncValue to the proper UI (Data, Loading, Error)
+                terminalsAsyncValue.when(
+                  data: (terminals) {
+                    if (terminals.isEmpty) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Text(
+                            "No terminals found.",
+                            style: TextStyle(color: AppColors.textSecondary),
+                          ),
+                        ),
+                      );
+                    }
+                    return TerminalGrid(terminals: terminals);
+                  },
+                  loading: () => const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(40.0),
+                      child: CircularProgressIndicator(color: AppColors.accentGreen),
+                    ),
+                  ),
+                  error: (error, stack) => Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text(
+                        "Error loading terminals: $error",
+                        style: const TextStyle(color: Colors.red),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
 
-              const SizedBox(height: 24),
-              // Popular Routes
-              RouteList(routes: dummyRoutes),
-              const SizedBox(
-                height: 24,
-              ), // Extra padding at the bottom to breathe above the nav bar
-            ],
+                const SizedBox(height: 24),
+                // Popular Routes
+                RouteList(routes: dummyRoutes),
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),
@@ -144,3 +133,4 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+

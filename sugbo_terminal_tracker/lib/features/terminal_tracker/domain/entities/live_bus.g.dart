@@ -8,14 +8,14 @@ part of 'live_bus.dart';
 
 _LiveBus _$LiveBusFromJson(Map<String, dynamic> json) => _LiveBus(
   id: json['id'] as String,
-  routeId: json['routeId'] as String,
-  lastKnownStop: json['lastKnownStop'] as String,
+  routeId: json['route_id'] as String,
+  lastKnownStop: json['last_known_stop'] as String,
   direction: json['direction'] as String,
 );
 
 Map<String, dynamic> _$LiveBusToJson(_LiveBus instance) => <String, dynamic>{
   'id': instance.id,
-  'routeId': instance.routeId,
-  'lastKnownStop': instance.lastKnownStop,
+  'route_id': instance.routeId,
+  'last_known_stop': instance.lastKnownStop,
   'direction': instance.direction,
 };

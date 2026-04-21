@@ -40,7 +40,10 @@ class SupabaseTerminalRepositoryImpl implements TerminalRepository {
         .debounceTime(const Duration(milliseconds: 300)) // Debounce rapid updates
         .map<Result<List<Terminal>, Exception>>((list) {
       try {
-        final terminals = list.map((json) => Terminal.fromJson(json)).toList();
+        final terminals = list.map((json) {
+          print('SUPABASE JSON: $json');
+          return Terminal.fromJson(json);
+        }).toList();
         return Success(terminals);
       } catch (e) {
         return Failure(Exception('Failed to parse terminals: $e'));

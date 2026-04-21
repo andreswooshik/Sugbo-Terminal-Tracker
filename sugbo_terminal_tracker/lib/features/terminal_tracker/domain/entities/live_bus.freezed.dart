@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LiveBus {
 
- String get id; String get routeId; String get lastKnownStop; String get direction;
+ String get id;@JsonKey(name: 'route_id') String get routeId;@JsonKey(name: 'last_known_stop') String get lastKnownStop; String get direction;
 /// Create a copy of LiveBus
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $LiveBusCopyWith<$Res>  {
   factory $LiveBusCopyWith(LiveBus value, $Res Function(LiveBus) _then) = _$LiveBusCopyWithImpl;
 @useResult
 $Res call({
- String id, String routeId, String lastKnownStop, String direction
+ String id,@JsonKey(name: 'route_id') String routeId,@JsonKey(name: 'last_known_stop') String lastKnownStop, String direction
 });
 
 
@@ -156,7 +156,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String routeId,  String lastKnownStop,  String direction)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'route_id')  String routeId, @JsonKey(name: 'last_known_stop')  String lastKnownStop,  String direction)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LiveBus() when $default != null:
 return $default(_that.id,_that.routeId,_that.lastKnownStop,_that.direction);case _:
@@ -177,7 +177,7 @@ return $default(_that.id,_that.routeId,_that.lastKnownStop,_that.direction);case
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String routeId,  String lastKnownStop,  String direction)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'route_id')  String routeId, @JsonKey(name: 'last_known_stop')  String lastKnownStop,  String direction)  $default,) {final _that = this;
 switch (_that) {
 case _LiveBus():
 return $default(_that.id,_that.routeId,_that.lastKnownStop,_that.direction);case _:
@@ -197,7 +197,7 @@ return $default(_that.id,_that.routeId,_that.lastKnownStop,_that.direction);case
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String routeId,  String lastKnownStop,  String direction)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'route_id')  String routeId, @JsonKey(name: 'last_known_stop')  String lastKnownStop,  String direction)?  $default,) {final _that = this;
 switch (_that) {
 case _LiveBus() when $default != null:
 return $default(_that.id,_that.routeId,_that.lastKnownStop,_that.direction);case _:
@@ -212,12 +212,12 @@ return $default(_that.id,_that.routeId,_that.lastKnownStop,_that.direction);case
 @JsonSerializable()
 
 class _LiveBus implements LiveBus {
-  const _LiveBus({required this.id, required this.routeId, required this.lastKnownStop, required this.direction});
+  const _LiveBus({required this.id, @JsonKey(name: 'route_id') required this.routeId, @JsonKey(name: 'last_known_stop') required this.lastKnownStop, required this.direction});
   factory _LiveBus.fromJson(Map<String, dynamic> json) => _$LiveBusFromJson(json);
 
 @override final  String id;
-@override final  String routeId;
-@override final  String lastKnownStop;
+@override@JsonKey(name: 'route_id') final  String routeId;
+@override@JsonKey(name: 'last_known_stop') final  String lastKnownStop;
 @override final  String direction;
 
 /// Create a copy of LiveBus
@@ -253,7 +253,7 @@ abstract mixin class _$LiveBusCopyWith<$Res> implements $LiveBusCopyWith<$Res> {
   factory _$LiveBusCopyWith(_LiveBus value, $Res Function(_LiveBus) _then) = __$LiveBusCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String routeId, String lastKnownStop, String direction
+ String id,@JsonKey(name: 'route_id') String routeId,@JsonKey(name: 'last_known_stop') String lastKnownStop, String direction
 });
 
 

@@ -1,4 +1,4 @@
-class Terminal {
+class TerminalUiModel {
   final String id;
   final String name;
   final String subtitle;
@@ -6,7 +6,7 @@ class Terminal {
   final bool isFree;
   final String statusColorHex;
 
-  Terminal({
+  TerminalUiModel({
     required this.id,
     required this.name,
     required this.subtitle,

@@ -7,8 +7,8 @@ part 'live_bus.g.dart';
 abstract class LiveBus with _$LiveBus {
   const factory LiveBus({
     required String id,
-    required String routeId,
-    required String lastKnownStop,
+    @JsonKey(name: 'route_id') required String routeId,
+    @JsonKey(name: 'last_known_stop') required String lastKnownStop,
     required String direction, // 'Southbound' or 'Northbound'
   }) = _LiveBus;
 

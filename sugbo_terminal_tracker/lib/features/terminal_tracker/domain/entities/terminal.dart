@@ -8,10 +8,10 @@ abstract class Terminal with _$Terminal {
   const factory Terminal({
     required String id,
     required String name,
-    required String operator, // e.g., "BRT anchor", "MyBus main hub"
-    required int waitTime, // in minutes
-    required DateTime lastUpdated,
-    required int routesAvailable,
+    String? operator, // e.g., "BRT anchor", "MyBus main hub"
+    @JsonKey(name: 'wait_time') int? waitTime, // in minutes
+    @JsonKey(name: 'last_updated') DateTime? lastUpdated,
+    @JsonKey(name: 'routes_available') int? routesAvailable,
   }) = _Terminal;
 
   factory Terminal.fromJson(Map<String, dynamic> json) => _$TerminalFromJson(json);
