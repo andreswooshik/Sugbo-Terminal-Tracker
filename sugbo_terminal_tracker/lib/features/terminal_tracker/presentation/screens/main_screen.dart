@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sugbo_terminal_tracker/features/routes/screens/routes_screen.dart';
 import 'package:sugbo_terminal_tracker/features/terminal_tracker/presentation/screens/home_screen.dart';
+import 'package:sugbo_terminal_tracker/features/terminals/screens/terminals_screen.dart';
+import 'package:sugbo_terminal_tracker/features/schedule/screens/schedule_screen.dart';
 import '../widgets/custom_bottom_nav.dart';
 import '../../../../core/theme/app_colors.dart';
 
@@ -17,19 +19,8 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     const HomeScreen(showBottomNav: false),
     const RoutesScreen(),
-    // Placeholder screens for the rest of the tabs
-    const Center(
-      child: Text(
-        'Terminals Placeholder',
-        style: TextStyle(color: Colors.white),
-      ),
-    ),
-    const Center(
-      child: Text(
-        'Schedule Placeholder',
-        style: TextStyle(color: Colors.white),
-      ),
-    ),
+    const TerminalsScreen(),
+    const ScheduleScreen(),
     const Center(
       child: Text('Savings Placeholder', style: TextStyle(color: Colors.white)),
     ),
