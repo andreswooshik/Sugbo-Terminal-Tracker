@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,9 +19,23 @@ Future<void> main() async {
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
+  // Setup error boundaries
+  FlutterError.onError = (FlutterErrorDetails details) {
+    // Log the error nicely or send to Crashlytics
+    if (kDebugMode) {
+      FlutterError.dumpErrorToConsole(details);
+    } else {
+      // In production, send to tracking service quietly
+      // e.g., Crashlytics.instance.recordFlutterFatalError(details);
+    }
+  };
+
   runApp(
-    // Add ProviderScope for Riverpod state management with a state logger
-    const ProviderScope(observers: [StateLogger()], child: MyApp()),
+    // Add ProviderScope for Riverpod state management, logging only in debug mode
+    ProviderScope(
+      observers: kDebugMode ? const [StateLogger()] : const [], 
+      child: const MyApp()
+    ),
   );
 }
 
@@ -37,8 +52,8 @@ class StateLogger extends ProviderObserver {
   ) {
     debugPrint('''
 [Provider Update] ${provider.name ?? provider.runtimeType}
-  ├─ Old Value: $previousValue
-  └─ New Value: $newValue
+  +- Old Value: $previousValue
+  +- New Value: $newValue
 ''');
   }
 }
@@ -59,7 +74,39 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
+      builder: (context, child) {
+        // Global Error Widget builder for build phase errors
+        ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+          return Scaffold(
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'An unexpected error occurred.',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    if (kDebugMode)
+                      Text(
+                        errorDetails.exceptionAsString(),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        };
+        return child ?? const SizedBox.shrink();
+      },
       home: const HomeScreen(),
     );
   }
 }
+
