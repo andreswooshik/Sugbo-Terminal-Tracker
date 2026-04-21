@@ -50,36 +50,36 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          'SugboTracker',
+          style: TextStyle(
+            fontFamily: 'Righteous',
+            color: Color.fromARGB(255, 243, 243, 243),
+            fontSize: 24,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.notifications_none,
+              color: AppColors.textPrimary,
+            ),
+            onPressed: () {},
+          ),
+        ],
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(bottom: 100),
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'SugboTracker',
-                      style: TextStyle(
-                        fontFamily: 'Righteous',
-                        color: AppColors.accentGreen,
-                        fontSize: 24,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.notifications_none,
-                        color: AppColors.textPrimary,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-
+                const SizedBox(height: 16),
                 // The components we built
                 const GreetingCard(),
                 const SizedBox(height: 16),
