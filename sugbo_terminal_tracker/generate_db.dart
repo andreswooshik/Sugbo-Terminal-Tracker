@@ -3,7 +3,7 @@ import 'package:sqlite3/sqlite3.dart';
 
 void main() {
   final dbPath = 'assets/routes.db';
-  
+
   // Delete the old database if it exists to start fresh
   if (File(dbPath).existsSync()) {
     File(dbPath).deleteSync();
@@ -31,6 +31,28 @@ void main() {
     )
   ''');
 
+  db.execute('''
+    CREATE TABLE brt_stations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      station_name TEXT NOT NULL,
+      km_marker REAL NOT NULL
+    )
+  ''');
+
+  final insertBrtStmt = db.prepare('''
+    INSERT INTO brt_stations (station_name, km_marker)
+    VALUES (?, ?)
+  ''');
+
+  insertBrtStmt.execute(['Il Corso', 0.0]);
+  insertBrtStmt.execute(['SM Seaside', 1.7]);
+  insertBrtStmt.execute(['CSBT', 5.0]);
+  insertBrtStmt.execute(['Fuente', 7.7]);
+  insertBrtStmt.execute(['Capitol', 8.6]);
+  insertBrtStmt.execute(['IT Park', 11.5]);
+
+  insertBrtStmt.dispose();
+
   final insertStmt = db.prepare('''
     INSERT INTO routes (origin, destination, title, subtitle, path, duration, price, comparison, status, isFree)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -41,38 +63,149 @@ void main() {
   // Format: [Origin, Destination, Title, Subtitle, Path, Duration, Price, Comparison, Status, isFree (1 for true, 0 for false)]
   // ========================================================================
 
-  // Routes from IT Park to SM City Cebu
+  // Route 4: SM City Cebu <-> Airport
   insertStmt.execute([
-    'IT Park', 'SM City Cebu', 'LIBRENG SAKAY', 
-    'Cebu City Libreng Sakay - 6 AM to 9 AM | 4 PM to 7 PM', 
-    'IT Park → Ayala → SM City Cebu', '2 stops · ~20-25 min', 
-    '₱0.00', 'vs ₱150 Grab', 'Next bus: ~5 min', 1
+    'SM City Cebu',
+    'Airport',
+    'MyBus Route 4',
+    'SM City Cebu - Airport',
+    'SM City Cebu → Parkmall → Airport',
+    'Several stops',
+    '₱50.00',
+    'vs ₱300+ Taxi',
+    'Every 30 mins (6AM-9PM)',
+    0,
+  ]);
+  insertStmt.execute([
+    'Airport',
+    'SM City Cebu',
+    'MyBus Route 4',
+    'Airport - SM City Cebu',
+    'Airport → Island Central → SM City Cebu',
+    'Several stops',
+    '₱50.00',
+    'vs ₱300+ Taxi',
+    'Every 30 mins (7AM-10PM)',
+    0,
   ]);
 
+  // Route 3: Anjo World <-> SM City Cebu via SRP
   insertStmt.execute([
-    'IT Park', 'SM City Cebu', 'BEEP JEEP (IT Park - SM)', 
-    'Modern Jeepney Route 04L', 
-    'IT Park Terminal → Mabolo → SM City Cebu', 'Several stops · ~30 min', 
-    '₱15.00', '', 'Every ~10 min', 0
+    'Anjo World',
+    'SM City Cebu',
+    'MyBus Route 3',
+    'Anjo World - SM Cebu via SRP',
+    'Anjo World → Talisay → Il Corso → SM City Cebu',
+    'Several stops',
+    '₱50.00',
+    'vs ₱250+ Grab',
+    'Every 10-20 mins (5:20AM-9PM)',
+    0,
+  ]);
+  insertStmt.execute([
+    'SM City Cebu',
+    'Anjo World',
+    'MyBus Route 3',
+    'SM Cebu - Anjo World via SRP',
+    'SM City Cebu → SRP → Talisay → Anjo World',
+    'Several stops',
+    '₱50.00',
+    'vs ₱250+ Grab',
+    'Every 20 mins (5AM-10PM)',
+    0,
   ]);
 
-  // Routes from IT Park to Il Corso
+  // FREE RIDE: Fuente <-> SM Seaside
   insertStmt.execute([
-    'IT Park', 'Il Corso', 'LIBRENG SAKAY', 
-    'BRT Libreng Sakay - 6:00 AM to 9:00 AM | 4:00 PM to 7:00 PM', 
-    'IT Park → Ayala → Fuente → Seaside → Il Corso', '9 stops · ~35-40 min', 
-    '₱0.00', 'vs ₱150-200 Grab', 'Next bus: ~10 min', 1
+    'Fuente',
+    'SM Seaside',
+    'FREE RIDE',
+    'Fuente - SM Seaside (Pick-up only)',
+    'BDO Fuente → N. Bacalso → SM Seaside',
+    '4 stops',
+    '₱0.00',
+    'vs ₱150 Grab',
+    'Every 30 mins (9AM-8PM)',
+    1,
+  ]);
+  insertStmt.execute([
+    'SM Seaside',
+    'Fuente',
+    'FREE RIDE',
+    'SM Seaside - Fuente (Drop-off only)',
+    'SM Seaside → N. Bacalso → BDO Fuente',
+    '4 stops',
+    '₱0.00',
+    'vs ₱150 Grab',
+    'Every 30 mins (11AM-10PM)',
+    1,
   ]);
 
+  // Route 1: J Mall <-> SM Seaside
   insertStmt.execute([
-    'IT Park', 'Il Corso', 'REGULAR ROUTE', 
-    'BRT Regular Bus - 9:00 AM to 4:00 PM', 
-    'IT Park → Several stops → Il Corso', '9 stops · ~35-40 min', 
-    '₱35.00', '', 'Every ~15 min during day', 0
+    'J Mall',
+    'SM Seaside',
+    'MyBus Route 1',
+    'J Mall - SM Cebu - SM Seaside',
+    'J Mall → SM City Cebu → SM Seaside',
+    'Several stops',
+    '₱30.00',
+    '',
+    'Every 20-30 mins (7:40AM-9PM)',
+    0,
+  ]);
+  insertStmt.execute([
+    'SM Seaside',
+    'J Mall',
+    'MyBus Route 1',
+    'SM Seaside - SM Cebu - J Mall',
+    'SM Seaside → SM City Cebu → J Mall',
+    'Several stops',
+    '₱30.00',
+    '',
+    'Every 20-30 mins (8:40AM-10PM)',
+    0,
   ]);
 
-  // ADD MORE ROUTES HERE...
-  // insertStmt.execute(['Origin', 'Destination', 'Title', 'Subtitle', 'Path', 'Duration', 'Price', 'Comparison', 'Status', 0]);
+  // Route 2: Anjo World <-> SM Seaside
+  insertStmt.execute([
+    'Anjo World',
+    'SM Seaside',
+    'MyBus Route 2',
+    'Anjo World - SM Seaside via SRP',
+    'Anjo World → Talisay → SM Seaside',
+    'Several stops',
+    '₱30.00',
+    '',
+    'Every 20 mins (6AM-9PM)',
+    0,
+  ]);
+  insertStmt.execute([
+    'SM Seaside',
+    'Anjo World',
+    'MyBus Route 2',
+    'SM Seaside - Anjo World via SRP',
+    'SM Seaside → Talisay → Anjo World',
+    'Several stops',
+    '₱30.00',
+    '',
+    'Every 20 mins (7AM-10PM)',
+    0,
+  ]);
+
+  // Love Bus Libreng Sakay
+  insertStmt.execute([
+    'Talisay City',
+    'Cebu City (SRP)',
+    'LOVE BUS',
+    'Libreng Sakay Program',
+    'Anjo World → SM Seaside (SRP)',
+    'Direct/Several stops',
+    '₱0.00',
+    'vs ₱150 Grab',
+    '6-9 AM | 5-8 PM',
+    1,
+  ]);
 
   // ========================================================================
 

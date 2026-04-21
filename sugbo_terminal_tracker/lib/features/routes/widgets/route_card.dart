@@ -39,9 +39,12 @@ class RouteCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Text(
-                route.subtitle,
-                style: const TextStyle(color: Colors.grey, fontSize: 12),
+              Expanded(
+                child: Text(
+                  route.subtitle,
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
@@ -63,23 +66,32 @@ class RouteCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Text(
-                    route.price,
-                    style: TextStyle(
-                      color: route.isFree ? Colors.green : Colors.purple[200],
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+              Expanded(
+                child: Row(
+                  children: [
+                    Text(
+                      route.price,
+                      style: TextStyle(
+                        color: route.isFree ? Colors.green : Colors.purple[200],
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    route.comparison,
-                    style: const TextStyle(color: Colors.grey, fontSize: 12),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        route.comparison,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Text(
                 route.status,
                 style: const TextStyle(color: Colors.grey, fontSize: 12),

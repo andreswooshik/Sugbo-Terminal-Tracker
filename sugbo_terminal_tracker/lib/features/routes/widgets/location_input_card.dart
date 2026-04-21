@@ -11,12 +11,18 @@ class LocationInputCard extends StatefulWidget {
 
 class _LocationInputCardState extends State<LocationInputCard> {
   final List<Map<String, String>> _locations = [
-    {'title': 'IT Park', 'subtitle': 'Lahug, Cebu City'},
-    {'title': 'Il Corso', 'subtitle': 'South Road Properties(SRP), Cebu'},
     {'title': 'SM City Cebu', 'subtitle': 'North Reclamation Area, Cebu City'},
-    {'title': 'Ayala Center', 'subtitle': 'Cebu Business Park, Cebu City'},
-    {'title': 'South Bus Terminal', 'subtitle': 'N. Bacalso Avenue, Cebu City'},
-    {'title': 'North Bus Terminal', 'subtitle': 'Subangdaku, Mandaue City'},
+    {'title': 'IT Park', 'subtitle': 'Lahug, Cebu City'},
+    {'title': 'Capitol', 'subtitle': 'Capitol Site / Escario St.'},
+    {'title': 'Fuente', 'subtitle': 'Fuente Osmeña Circle'},
+    {'title': 'CSBT', 'subtitle': 'Cebu South Bus Terminal / N. Bacalso'},
+    {'title': 'SM Seaside', 'subtitle': 'SRP, Cebu City'},
+    {'title': 'Il Corso', 'subtitle': 'South Road Properties (SRP)'},
+    {'title': 'Anjo World', 'subtitle': 'Minglanilla, Cebu'},
+    {'title': 'Airport', 'subtitle': 'Mactan Cebu International Airport'},
+    {'title': 'J Mall', 'subtitle': 'Mandaue City'},
+    {'title': 'Talisay City', 'subtitle': 'Talisay City Hall / Lawaan'},
+    {'title': 'Cebu City (SRP)', 'subtitle': 'South Road Properties'},
   ];
 
   Map<String, String>? _selectedFrom;
