@@ -3,6 +3,7 @@ import 'package:sugbo_terminal_tracker/features/routes/screens/routes_screen.dar
 import 'package:sugbo_terminal_tracker/features/terminal_tracker/presentation/screens/home_screen.dart';
 import 'package:sugbo_terminal_tracker/features/terminals/screens/terminals_screen.dart';
 import 'package:sugbo_terminal_tracker/features/schedule/screens/schedule_screen.dart';
+import 'package:sugbo_terminal_tracker/features/savings/screens/savings_screen.dart';
 import '../widgets/custom_bottom_nav.dart';
 import '../../../../core/theme/app_colors.dart';
 
@@ -21,9 +22,7 @@ class _MainScreenState extends State<MainScreen> {
     const RoutesScreen(),
     const TerminalsScreen(),
     const ScheduleScreen(),
-    const Center(
-      child: Text('Savings Placeholder', style: TextStyle(color: Colors.white)),
-    ),
+    const SavingsScreen(),
   ];
 
   void _onItemTapped(int index) {
