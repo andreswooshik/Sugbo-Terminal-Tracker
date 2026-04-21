@@ -61,7 +61,7 @@ class TerminalCard extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.accentGreen.withOpacity(0.2),
+                    color: AppColors.accentGreen.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Text(
@@ -91,7 +91,7 @@ class TerminalCard extends StatelessWidget {
               Text(
                 terminal.estimatedWaitTime,
                 style: TextStyle(
-                  color: AppColors.textSecondary.withOpacity(0.7),
+                  color: AppColors.textSecondary.withValues(alpha: 0.7),
                   fontSize: 12,
                 ),
               ),

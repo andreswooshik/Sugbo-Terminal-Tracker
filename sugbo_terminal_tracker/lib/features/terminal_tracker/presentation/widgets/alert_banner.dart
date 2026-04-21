@@ -9,11 +9,11 @@ class AlertBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.bannerBackground.withOpacity(
-          0.9,
+        color: AppColors.bannerBackground.withValues(
+          alpha: 0.9,
         ), // Slightly transparent green
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
@@ -21,7 +21,7 @@ class AlertBanner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -63,7 +63,7 @@ class AlertBanner extends StatelessWidget {
                 Text(
                   'IT Park ↔ Il Corso · No fare required',
                   style: TextStyle(
-                    color: AppColors.cardBackground.withOpacity(0.7),
+                    color: AppColors.cardBackground.withValues(alpha: 0.7),
                     fontSize: 12,
                   ),
                 ),
@@ -73,7 +73,7 @@ class AlertBanner extends StatelessWidget {
           // Right arrow icon
           Icon(
             Icons.chevron_right,
-            color: AppColors.cardBackground.withOpacity(0.5),
+            color: AppColors.cardBackground.withValues(alpha: 0.5),
           ),
         ],
       ),
