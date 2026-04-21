@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'core/theme/app_colors.dart';
 import 'features/terminal_tracker/presentation/screens/home_screen.dart';
 import 'package:sugbo_terminal_tracker/features/terminal_tracker/presentation/screens/main_screen.dart';

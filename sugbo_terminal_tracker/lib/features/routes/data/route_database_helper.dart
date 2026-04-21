@@ -125,6 +125,11 @@ class RouteDatabaseHelper {
           title: 'GENERIC BUS',
           subtitle: 'Regular operations',
           path: '$origin → $destination',
+          duration: '~20 min',
+          price: '₱15',
+          comparison: 'vs ₱150 Grab',
+          status: 'On-time',
+          isFree: false,
         ),
       ];
     }
