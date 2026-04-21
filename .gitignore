@@ -1,0 +1,43 @@
+```
+# Flutter/Dart specific
+.dart_tool/
+.packages
+pubspec.lock
+build/
+*.g.dart
+
+# Dependencies
+node_modules/
+vendor/
+
+# Logs
+*.log
+**/logs
+
+# Environment variables
+.env
+.env.local
+.env.*
+.envrc
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+lcov.info
+
+# Build artifacts
+dist/
+target/
+*.so
+*.dylib
+*.dll
+```

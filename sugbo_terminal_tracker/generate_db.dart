@@ -1,216 +1,238 @@
 import 'dart:io';
-import 'package:sqlite3/sqlite3.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-void main() {
-  final dbPath = 'assets/routes.db';
+void main() async {
+  // Initialize FFI for SQLite
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
 
-  // Delete the old database if it exists to start fresh
-  if (File(dbPath).existsSync()) {
-    File(dbPath).deleteSync();
-  }
+  await generateTerminalsDb();
+  await generateSchedulesDb();
+  await generateSavingsDb();
+  
+  print('All databases generated successfully!');
+}
 
-  print('Generating local database at: $dbPath');
-
-  // Open the database (this creates a new file)
-  final db = sqlite3.open(dbPath);
-
-  // Create the table structure
-  db.execute('''
-    CREATE TABLE routes (
+Future<void> generateTerminalsDb() async {
+  final dbPath = 'assets/terminals.db';
+  File(dbPath).deleteSync();
+  
+  final db = await openDatabase(dbPath);
+  
+  await db.execute('''
+    CREATE TABLE terminals (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      origin TEXT NOT NULL,
-      destination TEXT NOT NULL,
-      title TEXT NOT NULL,
-      subtitle TEXT NOT NULL,
-      path TEXT NOT NULL,
-      duration TEXT NOT NULL,
-      price TEXT NOT NULL,
-      comparison TEXT NOT NULL,
-      status TEXT NOT NULL,
-      isFree INTEGER NOT NULL
+      name TEXT NOT NULL,
+      description TEXT NOT NULL,
+      wait_time TEXT NOT NULL,
+      route_count TEXT NOT NULL,
+      last_updated TEXT NOT NULL,
+      is_free INTEGER NOT NULL DEFAULT 0,
+      accent_color TEXT NOT NULL
     )
   ''');
+  
+  await db.insert('terminals', {
+    'name': 'IT Park',
+    'description': 'BRT anchor',
+    'wait_time': '~3 min',
+    'route_count': '3 routes',
+    'last_updated': '2 min ago',
+    'is_free': 1,
+    'accent_color': '#0000FF',
+  });
+  
+  await db.insert('terminals', {
+    'name': 'SM Seaside',
+    'description': 'BRT + MyBus',
+    'wait_time': '~7 min',
+    'route_count': '4 routes',
+    'last_updated': '2 min ago',
+    'is_free': 1,
+    'accent_color': '#00FF00',
+  });
+  
+  await db.insert('terminals', {
+    'name': 'SM City',
+    'description': 'MyBus main hub',
+    'wait_time': '~5 min',
+    'route_count': '5 routes',
+    'last_updated': '2 min ago',
+    'is_free': 0,
+    'accent_color': '#00FF00',
+  });
+  
+  await db.insert('terminals', {
+    'name': 'Il Corso',
+    'description': 'BRT terminus',
+    'wait_time': '~12 min',
+    'route_count': '1 route',
+    'last_updated': '2 min ago',
+    'is_free': 1,
+    'accent_color': '#0000FF',
+  });
+  
+  await db.insert('terminals', {
+    'name': 'SM JMall',
+    'description': 'Mandaue - MyBus',
+    'wait_time': '~8 min',
+    'route_count': '2 routes',
+    'last_updated': '2 min ago',
+    'is_free': 0,
+    'accent_color': '#00FF00',
+  });
+  
+  await db.insert('terminals', {
+    'name': 'Anjo World',
+    'description': 'Love Bus + MyBus',
+    'wait_time': '~15 min',
+    'route_count': '3 routes',
+    'last_updated': '2 min ago',
+    'is_free': 1,
+    'accent_color': '#FF00FF',
+  });
+  
+  await db.close();
+  print('Generated terminals.db');
+}
 
-  db.execute('''
-    CREATE TABLE brt_stations (
+Future<void> generateSchedulesDb() async {
+  final dbPath = 'assets/schedules.db';
+  File(dbPath).deleteSync();
+  
+  final db = await openDatabase(dbPath);
+  
+  await db.execute('''
+    CREATE TABLE schedules (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      station_name TEXT NOT NULL,
-      km_marker REAL NOT NULL
+      provider_badge TEXT NOT NULL,
+      route_name TEXT NOT NULL,
+      route_details TEXT NOT NULL,
+      price_label TEXT NOT NULL,
+      frequency_label TEXT NOT NULL,
+      accent_color TEXT NOT NULL,
+      is_free INTEGER NOT NULL DEFAULT 0
     )
   ''');
+  
+  await db.insert('schedules', {
+    'provider_badge': 'BRT',
+    'route_name': 'IT Park ↔ Il Corso',
+    'route_details': '9 stops · ~35 min',
+    'price_label': 'FREE - Peak only',
+    'frequency_label': 'Continuous',
+    'accent_color': '#1E90FF',
+    'is_free': 1,
+  });
+  
+  await db.insert('schedules', {
+    'provider_badge': 'MyBus R1',
+    'route_name': 'JMall ↔ SM City ↔ SM Seaside',
+    'route_details': '12 stops · ~45 min',
+    'price_label': '₱30',
+    'frequency_label': '30 min (wkday) · 20 min (wknd)',
+    'accent_color': '#00FF00',
+    'is_free': 0,
+  });
+  
+  await db.insert('schedules', {
+    'provider_badge': 'MyBus R2',
+    'route_name': 'Anjo World ↔ SM Seaside via SRP',
+    'route_details': '15 stops · ~40 min',
+    'price_label': '₱30',
+    'frequency_label': 'Every 20 min',
+    'accent_color': '#00FF00',
+    'is_free': 0,
+  });
+  
+  await db.insert('schedules', {
+    'provider_badge': 'MyBus R3',
+    'route_name': 'Anjo World ↔ SM City / Parkmall',
+    'route_details': '20 stops · ~60 min',
+    'price_label': '₱50',
+    'frequency_label': 'Every 5-20 min',
+    'accent_color': '#00FF00',
+    'is_free': 0,
+  });
+  
+  await db.insert('schedules', {
+    'provider_badge': 'MyBus R4',
+    'route_name': 'SM City ↔ Airport (MCIA)',
+    'route_details': '8 stops · ~35 min',
+    'price_label': '₱50',
+    'frequency_label': 'Every 30 min',
+    'accent_color': '#00FF00',
+    'is_free': 0,
+  });
+  
+  await db.insert('schedules', {
+    'provider_badge': 'Love Bus',
+    'route_name': 'Anjo World / Talisay → Cebu SRP',
+    'route_details': 'SRP corridor',
+    'price_label': 'FREE - Peak only',
+    'frequency_label': '6-9 AM and 5-8 PM only',
+    'accent_color': '#FF1493',
+    'is_free': 1,
+  });
+  
+  await db.close();
+  print('Generated schedules.db');
+}
 
-  final insertBrtStmt = db.prepare('''
-    INSERT INTO brt_stations (station_name, km_marker)
-    VALUES (?, ?)
+Future<void> generateSavingsDb() async {
+  final dbPath = 'assets/savings.db';
+  File(dbPath).deleteSync();
+  
+  final db = await openDatabase(dbPath);
+  
+  await db.execute('''
+    CREATE TABLE trips (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      route TEXT NOT NULL,
+      timestamp TEXT NOT NULL,
+      provider TEXT NOT NULL,
+      savings_amount REAL NOT NULL,
+      accent_color TEXT NOT NULL,
+      provider_color TEXT NOT NULL
+    )
   ''');
-
-  insertBrtStmt.execute(['Il Corso', 0.0]);
-  insertBrtStmt.execute(['SM Seaside', 1.7]);
-  insertBrtStmt.execute(['CSBT', 5.0]);
-  insertBrtStmt.execute(['Fuente', 7.7]);
-  insertBrtStmt.execute(['Capitol', 8.6]);
-  insertBrtStmt.execute(['IT Park', 11.5]);
-
-  insertBrtStmt.dispose();
-
-  final insertStmt = db.prepare('''
-    INSERT INTO routes (origin, destination, title, subtitle, path, duration, price, comparison, status, isFree)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  ''');
-
-  // ========================================================================
-  // 🚍 EDIT YOUR REAL ROUTES DOWN BELOW!
-  // Format: [Origin, Destination, Title, Subtitle, Path, Duration, Price, Comparison, Status, isFree (1 for true, 0 for false)]
-  // ========================================================================
-
-  // Route 4: SM City Cebu <-> Airport
-  insertStmt.execute([
-    'SM City Cebu',
-    'Airport',
-    'MyBus Route 4',
-    'SM City Cebu - Airport',
-    'SM City Cebu → Parkmall → Airport',
-    'Several stops',
-    '₱50.00',
-    'vs ₱300+ Taxi',
-    'Every 30 mins (6AM-9PM)',
-    0,
-  ]);
-  insertStmt.execute([
-    'Airport',
-    'SM City Cebu',
-    'MyBus Route 4',
-    'Airport - SM City Cebu',
-    'Airport → Island Central → SM City Cebu',
-    'Several stops',
-    '₱50.00',
-    'vs ₱300+ Taxi',
-    'Every 30 mins (7AM-10PM)',
-    0,
-  ]);
-
-  // Route 3: Anjo World <-> SM City Cebu via SRP
-  insertStmt.execute([
-    'Anjo World',
-    'SM City Cebu',
-    'MyBus Route 3',
-    'Anjo World - SM Cebu via SRP',
-    'Anjo World → Talisay → Il Corso → SM City Cebu',
-    'Several stops',
-    '₱50.00',
-    'vs ₱250+ Grab',
-    'Every 10-20 mins (5:20AM-9PM)',
-    0,
-  ]);
-  insertStmt.execute([
-    'SM City Cebu',
-    'Anjo World',
-    'MyBus Route 3',
-    'SM Cebu - Anjo World via SRP',
-    'SM City Cebu → SRP → Talisay → Anjo World',
-    'Several stops',
-    '₱50.00',
-    'vs ₱250+ Grab',
-    'Every 20 mins (5AM-10PM)',
-    0,
-  ]);
-
-  // FREE RIDE: Fuente <-> SM Seaside
-  insertStmt.execute([
-    'Fuente',
-    'SM Seaside',
-    'FREE RIDE',
-    'Fuente - SM Seaside (Pick-up only)',
-    'BDO Fuente → N. Bacalso → SM Seaside',
-    '4 stops',
-    '₱0.00',
-    'vs ₱150 Grab',
-    'Every 30 mins (9AM-8PM)',
-    1,
-  ]);
-  insertStmt.execute([
-    'SM Seaside',
-    'Fuente',
-    'FREE RIDE',
-    'SM Seaside - Fuente (Drop-off only)',
-    'SM Seaside → N. Bacalso → BDO Fuente',
-    '4 stops',
-    '₱0.00',
-    'vs ₱150 Grab',
-    'Every 30 mins (11AM-10PM)',
-    1,
-  ]);
-
-  // Route 1: J Mall <-> SM Seaside
-  insertStmt.execute([
-    'J Mall',
-    'SM Seaside',
-    'MyBus Route 1',
-    'J Mall - SM Cebu - SM Seaside',
-    'J Mall → SM City Cebu → SM Seaside',
-    'Several stops',
-    '₱30.00',
-    '',
-    'Every 20-30 mins (7:40AM-9PM)',
-    0,
-  ]);
-  insertStmt.execute([
-    'SM Seaside',
-    'J Mall',
-    'MyBus Route 1',
-    'SM Seaside - SM Cebu - J Mall',
-    'SM Seaside → SM City Cebu → J Mall',
-    'Several stops',
-    '₱30.00',
-    '',
-    'Every 20-30 mins (8:40AM-10PM)',
-    0,
-  ]);
-
-  // Route 2: Anjo World <-> SM Seaside
-  insertStmt.execute([
-    'Anjo World',
-    'SM Seaside',
-    'MyBus Route 2',
-    'Anjo World - SM Seaside via SRP',
-    'Anjo World → Talisay → SM Seaside',
-    'Several stops',
-    '₱30.00',
-    '',
-    'Every 20 mins (6AM-9PM)',
-    0,
-  ]);
-  insertStmt.execute([
-    'SM Seaside',
-    'Anjo World',
-    'MyBus Route 2',
-    'SM Seaside - Anjo World via SRP',
-    'SM Seaside → Talisay → Anjo World',
-    'Several stops',
-    '₱30.00',
-    '',
-    'Every 20 mins (7AM-10PM)',
-    0,
-  ]);
-
-  // Love Bus Libreng Sakay
-  insertStmt.execute([
-    'Talisay City',
-    'Cebu City (SRP)',
-    'LOVE BUS',
-    'Libreng Sakay Program',
-    'Anjo World → SM Seaside (SRP)',
-    'Direct/Several stops',
-    '₱0.00',
-    'vs ₱150 Grab',
-    '6-9 AM | 5-8 PM',
-    1,
-  ]);
-
-  // ========================================================================
-
-  insertStmt.dispose();
-  db.dispose();
-
-  print('Successfully generated routes.db with your updated data!');
+  
+  await db.insert('trips', {
+    'route': 'IT Park → Il Corso',
+    'timestamp': 'Today 8:30 AM',
+    'provider': 'BRT',
+    'savings_amount': 150.0,
+    'accent_color': '#00FF9D',
+    'provider_color': '#00FF9D',
+  });
+  
+  await db.insert('trips', {
+    'route': 'SM Seaside → SM JMall',
+    'timestamp': 'Today 9:15 AM',
+    'provider': 'MyBus',
+    'savings_amount': 80.0,
+    'accent_color': '#E040FB',
+    'provider_color': '#E040FB',
+  });
+  
+  await db.insert('trips', {
+    'route': 'Il Corso → IT Park',
+    'timestamp': 'Yesterday 6:00 PM',
+    'provider': 'BRT',
+    'savings_amount': 150.0,
+    'accent_color': '#00FF9D',
+    'provider_color': '#00FF9D',
+  });
+  
+  await db.insert('trips', {
+    'route': 'Anjo World → SM City',
+    'timestamp': 'Yesterday 7:30 AM',
+    'provider': 'MyBus',
+    'savings_amount': 120.0,
+    'accent_color': '#E040FB',
+    'provider_color': '#E040FB',
+  });
+  
+  await db.close();
+  print('Generated savings.db');
 }

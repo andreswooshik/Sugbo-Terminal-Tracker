@@ -1,49 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../domain/providers/savings_providers.dart';
 import '../models/trip_model.dart';
 import '../widgets/total_saved_card.dart';
 import '../widgets/breakdown_grid.dart';
 import '../widgets/recent_trip_card.dart';
 import '../widgets/diskarte_score_card.dart';
 
-class SavingsScreen extends StatelessWidget {
+class SavingsScreen extends ConsumerWidget {
   const SavingsScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final List<TripModel> mockTrips = [
-      TripModel(
-        route: 'IT Park → Il Corso',
-        timestamp: 'Today 8:30 AM',
-        provider: 'BRT',
-        savings: '₱150',
-        accentColor: const Color(0xFF00FF9D),
-        providerColor: const Color(0xFF00FF9D),
-      ),
-      TripModel(
-        route: 'SM Seaside → SM JMall',
-        timestamp: 'Today 9:15 AM',
-        provider: 'MyBus',
-        savings: '₱80',
-        accentColor: const Color(0xFFE040FB),
-        providerColor: const Color(0xFFE040FB),
-      ),
-      TripModel(
-        route: 'Il Corso → IT Park',
-        timestamp: 'Yesterday 6:00 PM',
-        provider: 'BRT',
-        savings: '₱150',
-        accentColor: const Color(0xFF00FF9D),
-        providerColor: const Color(0xFF00FF9D),
-      ),
-      TripModel(
-        route: 'Anjo World → SM City',
-        timestamp: 'Yesterday 7:30 AM',
-        provider: 'MyBus',
-        savings: '₱120',
-        accentColor: const Color(0xFFE040FB),
-        providerColor: const Color(0xFFE040FB),
-      ),
-    ];
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the stream of trips from SQLite
+    final tripsAsyncValue = ref.watch(tripsStreamProvider);
+    // Watch total savings
+    final totalSavingsAsync = ref.watch(totalSavingsProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFF6B7B9E),
@@ -69,36 +41,67 @@ class SavingsScreen extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 16),
-              const TotalSavedCard(),
+        child: tripsAsyncValue.when(
+          data: (mockTrips) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 16),
+                  // Pass total savings to TotalSavedCard
+                  totalSavingsAsync.when(
+                    data: (savings) => TotalSavedCard(totalAmount: savings['total'] ?? 0.0),
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, s) => const TotalSavedCard(totalAmount: 0.0),
+                  ),
 
-              const Padding(
-                padding: EdgeInsets.only(top: 24, bottom: 12),
-                child: Text(
-                  'This week breakdown',
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
-                ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 24, bottom: 12),
+                    child: Text(
+                      'This week breakdown',
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                  ),
+                  const BreakdownGrid(),
+
+                  const Padding(
+                    padding: EdgeInsets.only(top: 24, bottom: 12),
+                    child: Text(
+                      'Recent trips',
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                  ),
+
+                  if (mockTrips.isEmpty)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(32.0),
+                        child: Text(
+                          'No trips recorded yet.',
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                      ),
+                    )
+                  else
+                    ...mockTrips.map((trip) => RecentTripCard(trip: trip)).toList(),
+
+                  const SizedBox(height: 16),
+                  const DiskarteScoreCard(),
+                ],
               ),
-              const BreakdownGrid(),
-
-              const Padding(
-                padding: EdgeInsets.only(top: 24, bottom: 12),
-                child: Text(
-                  'Recent trips',
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
-                ),
-              ),
-
-              ...mockTrips.map((trip) => RecentTripCard(trip: trip)).toList(),
-
-              const SizedBox(height: 16),
-              const DiskarteScoreCard(),
-            ],
+            );
+          },
+          loading: () => const Center(
+            child: CircularProgressIndicator(
+              color: Colors.white,
+            ),
+          ),
+          error: (error, stack) => Center(
+            child: Text(
+              'Error loading trips: $error',
+              style: const TextStyle(color: Colors.red),
+            ),
           ),
         ),
       ),

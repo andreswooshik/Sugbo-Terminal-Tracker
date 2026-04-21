@@ -1,84 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../domain/providers/schedule_providers.dart';
 import '../models/schedule_model.dart';
 import '../widgets/schedule_card.dart';
 import '../widgets/filter_chip_widget.dart';
 
-class ScheduleScreen extends StatefulWidget {
+class ScheduleScreen extends ConsumerStatefulWidget {
   const ScheduleScreen({Key? key}) : super(key: key);
 
   @override
-  State<ScheduleScreen> createState() => _ScheduleScreenState();
+  ConsumerState<ScheduleScreen> createState() => _ScheduleScreenState();
 }
 
-class _ScheduleScreenState extends State<ScheduleScreen> {
+class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
   String selectedFilter = 'All';
 
   final List<String> filters = ['All', 'BRT', 'MyBus', 'Love Bus'];
 
-  final List<ScheduleModel> allSchedules = [
-    ScheduleModel(
-      providerBadge: 'BRT',
-      routeName: 'IT Park ↔ Il Corso',
-      routeDetails: '9 stops · ~35 min',
-      priceLabel: 'FREE - Peak only',
-      frequencyLabel: 'Continuous',
-      accentColor: Colors.blueAccent,
-      isFree: true,
-    ),
-    ScheduleModel(
-      providerBadge: 'MyBus R1',
-      routeName: 'JMall ↔ SM City ↔ SM Seaside',
-      routeDetails: '12 stops · ~45 min',
-      priceLabel: '₱30',
-      frequencyLabel: '30 min (wkday) · 20 min (w... ',
-      accentColor: Colors.greenAccent,
-      isFree: false,
-    ),
-    ScheduleModel(
-      providerBadge: 'MyBus R2',
-      routeName: 'Anjo World ↔ SM Seaside via SRP',
-      routeDetails: '15 stops · ~40 min',
-      priceLabel: '₱30',
-      frequencyLabel: 'Every 20 min',
-      accentColor: Colors.greenAccent,
-      isFree: false,
-    ),
-    ScheduleModel(
-      providerBadge: 'MyBus R3',
-      routeName: 'Anjo World ↔ SM City / Parkmall',
-      routeDetails: '20 stops · ~60 min',
-      priceLabel: '₱50',
-      frequencyLabel: 'Every 5-20 min',
-      accentColor: Colors.greenAccent,
-      isFree: false,
-    ),
-    ScheduleModel(
-      providerBadge: 'MyBus R4',
-      routeName: 'SM City ↔ Airport (MCIA)',
-      routeDetails: '8 stops · ~35 min',
-      priceLabel: '₱50',
-      frequencyLabel: 'Every 30 min',
-      accentColor: Colors.greenAccent,
-      isFree: false,
-    ),
-    ScheduleModel(
-      providerBadge: 'Love Bus',
-      routeName: 'Anjo World / Talisay → Cebu SRP',
-      routeDetails: 'SRP corridor',
-      priceLabel: 'FREE - Peak only',
-      frequencyLabel: '6-9 AM and 5-8 PM only',
-      accentColor: Colors.pinkAccent,
-      isFree: true,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final filteredSchedules = selectedFilter == 'All'
-        ? allSchedules
-        : allSchedules
-              .where((s) => s.providerBadge.contains(selectedFilter))
-              .toList();
+    // Watch the stream of schedules from SQLite
+    final schedulesAsyncValue = ref.watch(schedulesStreamProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFF6B7B9E),
@@ -131,12 +73,42 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
             // List of schedules
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                itemCount: filteredSchedules.length,
-                itemBuilder: (context, index) {
-                  return ScheduleCard(schedule: filteredSchedules[index]);
+              child: schedulesAsyncValue.when(
+                data: (allSchedules) {
+                  if (allSchedules.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'No schedules available.',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    );
+                  }
+
+                  final filteredSchedules = selectedFilter == 'All'
+                      ? allSchedules
+                      : allSchedules
+                            .where((s) => s.providerBadge.contains(selectedFilter))
+                            .toList();
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    itemCount: filteredSchedules.length,
+                    itemBuilder: (context, index) {
+                      return ScheduleCard(schedule: filteredSchedules[index]);
+                    },
+                  );
                 },
+                loading: () => const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                ),
+                error: (error, stack) => Center(
+                  child: Text(
+                    'Error loading schedules: $error',
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
               ),
             ),
           ],
