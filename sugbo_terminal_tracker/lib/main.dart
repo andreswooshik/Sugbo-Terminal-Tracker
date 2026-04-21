@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'core/theme/app_colors.dart';
+import 'features/terminal_tracker/presentation/screens/home_screen.dart';
 
 Future<void> main() async {
   // Ensure Flutter is ready.
@@ -18,10 +20,7 @@ Future<void> main() async {
 
   runApp(
     // Add ProviderScope for Riverpod state management with a state logger
-    const ProviderScope(
-      observers: [StateLogger()],
-      child: MyApp(),
-    ),
+    const ProviderScope(observers: [StateLogger()], child: MyApp()),
   );
 }
 
@@ -36,13 +35,11 @@ class StateLogger extends ProviderObserver {
     Object? newValue,
     ProviderContainer container,
   ) {
-    debugPrint(
-      '''
+    debugPrint('''
 [Provider Update] ${provider.name ?? provider.runtimeType}
   ├─ Old Value: $previousValue
   └─ New Value: $newValue
-''',
-    );
+''');
   }
 }
 
@@ -52,18 +49,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sugbo Terminal Tracker',
-      theme: ThemeData.dark().copyWith(
-        primaryColor: const Color(0xFF0C447C),
-        scaffoldBackgroundColor: const Color(0xFF0A192F),
-        // You can add more theme customizations here later
-      ),
-      // For now, our home is just a placeholder
-      home: const Scaffold(
-        body: Center(
-          child: Text('Sugbo Terminal Tracker'),
+      title: 'Sugbo Tracker',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor: AppColors.background,
+        colorScheme: ColorScheme.dark(
+          primary: AppColors.accentGreen,
+          surface: AppColors.background,
         ),
+        useMaterial3: true,
       ),
+      home: const HomeScreen(),
     );
   }
 }
