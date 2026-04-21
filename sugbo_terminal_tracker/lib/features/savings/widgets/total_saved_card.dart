@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TotalSavedCard extends StatelessWidget {
-  const TotalSavedCard({Key? key}) : super(key: key);
+  const TotalSavedCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +9,7 @@ class TotalSavedCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF4B8C9F).withOpacity(0.5), // A muted teal/blue bg
+        color: const Color(0xFF4B8C9F).withValues(alpha: 0.5), // A muted teal/blue bg
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: const Color(0xFF32A68E), width: 1.5),
       ),

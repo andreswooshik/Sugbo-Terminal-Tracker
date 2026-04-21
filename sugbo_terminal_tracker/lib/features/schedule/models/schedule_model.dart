@@ -18,4 +18,28 @@ class ScheduleModel {
     required this.accentColor,
     this.isFree = false,
   });
+
+  factory ScheduleModel.fromMap(Map<String, dynamic> map) {
+    return ScheduleModel(
+      providerBadge: map['providerBadge'],
+      routeName: map['routeName'],
+      routeDetails: map['routeDetails'],
+      priceLabel: map['priceLabel'],
+      frequencyLabel: map['frequencyLabel'],
+      accentColor: Color(int.parse(map['accentColorHex'], radix: 16)),
+      isFree: map['isFree'] == 1,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'providerBadge': providerBadge,
+      'routeName': routeName,
+      'routeDetails': routeDetails,
+      'priceLabel': priceLabel,
+      'frequencyLabel': frequencyLabel,
+      'accentColorHex': accentColor.value.toRadixString(16).padLeft(8, '0'),
+      'isFree': isFree ? 1 : 0,
+    };
+  }
 }

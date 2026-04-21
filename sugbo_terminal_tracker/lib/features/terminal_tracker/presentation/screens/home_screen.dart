@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/models/transit_route_model.dart';
-import '../../domain/providers/terminal_providers.dart'; // Import our new provider
+import '../../domain/providers/terminal_providers.dart'; 
+import '../../../../features/routes/providers/route_providers.dart';
+import '../../../../features/routes/models/route_model.dart';
 import '../widgets/greeting_card.dart';
 import '../widgets/alert_banner.dart';
 import '../widgets/status_card.dart';
@@ -17,36 +19,9 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the live stream of Terminal Ui Models from Supabase
+    // Watch the live stream of Terminal Ui Models from SQLite
     final terminalsAsyncValue = ref.watch(terminalsStreamProvider);
-
-    // Dummy data matching the Figma design for the Routes List
-    final List<TransitRoute> dummyRoutes = [
-      TransitRoute(
-        id: '1',
-        providerName: 'BRT',
-        origin: 'IT Park',
-        destination: 'Il Corso',
-        frequency: 'Every 20 min',
-        price: 'FREE',
-      ),
-      TransitRoute(
-        id: '2',
-        providerName: 'MyBus',
-        origin: 'Anjo World',
-        destination: 'SM City',
-        frequency: 'Every 20 min',
-        price: '?50',
-      ),
-      TransitRoute(
-        id: '3',
-        providerName: 'MyBus',
-        origin: 'SM Seaside',
-        destination: 'SM JMall',
-        frequency: 'Every 20 min',
-        price: '?30',
-      ),
-    ];
+    final routesAsyncValue = ref.watch(routesListProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -136,8 +111,36 @@ class HomeScreen extends ConsumerWidget {
                 ),
 
                 const SizedBox(height: 24),
-                // Popular Routes
-                RouteList(routes: dummyRoutes),
+                // Popular Routes Section
+                routesAsyncValue.when(
+                  data: (routes) {
+                    final transitRoutes = routes
+                        .take(3)
+                        .map((r) => TransitRoute(
+                              id: r.id?.toString() ?? '',
+                              providerName: r.title.contains('BRT') ||
+                                      r.title.contains('FREE')
+                                  ? 'BRT'
+                                  : 'MyBus',
+                              origin: r.origin,
+                              destination: r.destination,
+                              frequency: r.status,
+                              price: r.isFree ? 'FREE' : r.price,
+                            ))
+                        .toList();
+
+                    return RouteList(routes: transitRoutes);
+                  },
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.accentGreen,
+                    ),
+                  ),
+                  error: (error, stack) => Text(
+                    'Error loading routes: $error',
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
                 const SizedBox(height: 24),
               ],
             ),

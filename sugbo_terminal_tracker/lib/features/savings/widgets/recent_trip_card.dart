@@ -4,7 +4,7 @@ import '../models/trip_model.dart';
 class RecentTripCard extends StatelessWidget {
   final TripModel trip;
 
-  const RecentTripCard({Key? key, required this.trip}) : super(key: key);
+  const RecentTripCard({super.key, required this.trip});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class RecentTripCard extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: trip.providerColor.withOpacity(0.2),
+                        color: trip.providerColor.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(

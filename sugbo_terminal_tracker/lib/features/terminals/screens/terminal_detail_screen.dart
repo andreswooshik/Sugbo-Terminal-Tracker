@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
 import '../models/terminal_wait_model.dart';
 import '../widgets/terminal_queue_card.dart';
 import '../widgets/free_ride_banner.dart';
@@ -8,13 +9,12 @@ import '../widgets/next_departure_tile.dart';
 class TerminalDetailScreen extends StatelessWidget {
   final TerminalWaitModel terminal;
 
-  const TerminalDetailScreen({Key? key, required this.terminal})
-    : super(key: key);
+  const TerminalDetailScreen({super.key, required this.terminal});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF6B7B9E),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -57,9 +57,9 @@ class TerminalDetailScreen extends StatelessWidget {
               if (terminal.isFree) const FreeRideBanner(),
               if (terminal.isFree) const SizedBox(height: 24),
 
-              const Text(
-                'Routes departing from IT Park',
-                style: TextStyle(color: Colors.white70, fontSize: 13),
+              Text(
+                'Routes departing from ${terminal.name}',
+                style: const TextStyle(color: Colors.white70, fontSize: 13),
               ),
               const SizedBox(height: 12),
               const DepartingRouteCard(
@@ -166,12 +166,12 @@ class TerminalDetailScreen extends StatelessWidget {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent.withOpacity(0.15),
+                    backgroundColor: Colors.blueAccent.withValues(alpha: 0.15),
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
                       side: BorderSide(
-                        color: Colors.lightBlueAccent.withOpacity(0.3),
+                        color: Colors.lightBlueAccent.withValues(alpha: 0.3),
                       ),
                     ),
                   ),

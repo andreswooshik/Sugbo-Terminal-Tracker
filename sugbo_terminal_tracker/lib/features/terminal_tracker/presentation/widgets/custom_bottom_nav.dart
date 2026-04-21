@@ -72,7 +72,7 @@ class CustomBottomNav extends StatelessWidget {
   }) {
     final color = isActive
         ? Colors.lightBlueAccent
-        : AppColors.textSecondary.withOpacity(0.6);
+        : AppColors.textSecondary.withValues(alpha: 0.6);
 
     return GestureDetector(
       onTap: onTap,

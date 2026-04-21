@@ -6,11 +6,11 @@ class FilterChipWidget extends StatelessWidget {
   final VoidCallback onTap;
 
   const FilterChipWidget({
-    Key? key,
+    super.key,
     required this.label,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

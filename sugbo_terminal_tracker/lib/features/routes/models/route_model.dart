@@ -1,3 +1,8 @@
+/// Data model representing a single transit route result.
+///
+/// Fields that may be absent (e.g. for a generic fallback route)
+/// have sensible defaults so callers don't need to supply every
+/// value.
 class RouteModel {
   final String title;
   final String subtitle;
@@ -12,22 +17,22 @@ class RouteModel {
     required this.title,
     required this.subtitle,
     required this.path,
-    required this.duration,
-    required this.price,
-    required this.comparison,
-    required this.status,
+    this.duration = '',
+    this.price = '',
+    this.comparison = '',
+    this.status = '',
     this.isFree = false,
   });
 
-  factory RouteModel.fromMap(Map<String, dynamic> json) => RouteModel(
-    title: json['title'] as String,
-    subtitle: json['subtitle'] as String,
-    path: json['path'] as String,
-    duration: json['duration'] as String,
-    price: json['price'] as String,
-    comparison: json['comparison'] as String,
-    status: json['status'] as String,
-    isFree: (json['isFree'] as int) == 1,
+  factory RouteModel.fromMap(Map<String, dynamic> map) => RouteModel(
+    title: map['title'] as String,
+    subtitle: map['subtitle'] as String,
+    path: map['path'] as String,
+    duration: map['duration'] as String,
+    price: map['price'] as String,
+    comparison: map['comparison'] as String,
+    status: map['status'] as String,
+    isFree: (map['isFree'] as int) == 1,
   );
 
   Map<String, dynamic> toMap() => {

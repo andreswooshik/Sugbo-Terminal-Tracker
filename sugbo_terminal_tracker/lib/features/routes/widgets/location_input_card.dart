@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class LocationInputCard extends StatefulWidget {
   final void Function(Map<String, String>?, Map<String, String>?)? onSearch;
 
-  const LocationInputCard({Key? key, this.onSearch}) : super(key: key);
+  const LocationInputCard({super.key, this.onSearch});
 
   @override
   State<LocationInputCard> createState() => _LocationInputCardState();
@@ -105,7 +105,7 @@ class _LocationInputCardState extends State<LocationInputCard> {
           decoration: BoxDecoration(
             color: const Color(0xFF2C313D),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.blue.withOpacity(0.3)),
+            border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
           ),
           child: Row(
             children: [

@@ -1,20 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/data/database_service.dart';
 import '../repositories/terminal_repository.dart';
-import '../repositories/supabase_terminal_repository_impl.dart';
+import '../repositories/sqlite_terminal_repository_impl.dart';
 import '../usecases/report_wait_time.dart';
 import '../entities/terminal.dart';
 import '../models/terminal_model.dart';
 
-// 1. Provide the Supabase Client (Dependency injection)
-final supabaseClientProvider = Provider<SupabaseClient>((ref) {
-  return Supabase.instance.client;
+// 1. Provide the DatabaseService
+final databaseServiceProvider = Provider<DatabaseService>((ref) {
+  return DatabaseService.instance;
 });
 
-// 2. Provide the Repository using the injected client
+// 2. Provide the Repository using the injected database service
 final terminalRepositoryProvider = Provider<TerminalRepository>((ref) {
-  final client = ref.watch(supabaseClientProvider);
-  return SupabaseTerminalRepositoryImpl(client: client);
+  final dbService = ref.watch(databaseServiceProvider);
+  return SqliteTerminalRepositoryImpl(databaseService: dbService);
 });
 
 // 3. Provide Use Cases
@@ -52,7 +52,7 @@ final terminalsStreamProvider = StreamProvider.autoDispose<List<TerminalUiModel>
           id: entity.id,
           name: entity.name,
           subtitle: operatorName,
-          estimatedWaitTime: '~${waitTime} min wait',
+          estimatedWaitTime: '~$waitTime min wait',
           isFree: operatorName.toLowerCase().contains('brt'), 
           statusColorHex: colorHex,
         );

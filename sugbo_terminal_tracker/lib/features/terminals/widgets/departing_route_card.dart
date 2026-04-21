@@ -8,13 +8,13 @@ class DepartingRouteCard extends StatelessWidget {
   final Color accentColor;
 
   const DepartingRouteCard({
-    Key? key,
+    super.key,
     required this.route,
     required this.frequency,
     required this.provider,
     this.isFree = false,
     required this.accentColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +72,7 @@ class DepartingRouteCard extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: accentColor.withOpacity(0.2),
+                        color: accentColor.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -92,7 +92,7 @@ class DepartingRouteCard extends StatelessWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.greenAccent.withOpacity(0.2),
+                          color: Colors.greenAccent.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Text(

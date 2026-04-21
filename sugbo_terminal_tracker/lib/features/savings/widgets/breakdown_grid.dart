@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BreakdownGrid extends StatelessWidget {
-  const BreakdownGrid({Key? key}) : super(key: key);
+  const BreakdownGrid({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import '../data/route_database_helper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/theme/app_colors.dart';
 import '../models/route_model.dart';
+import '../providers/route_providers.dart';
 import '../widgets/location_input_card.dart';
 import '../widgets/route_card.dart';
 import '../widgets/savings_card.dart';
 
-class RoutesScreen extends StatefulWidget {
-  const RoutesScreen({Key? key}) : super(key: key);
+class RoutesScreen extends ConsumerStatefulWidget {
+  const RoutesScreen({super.key});
 
   @override
-  State<RoutesScreen> createState() => _RoutesScreenState();
+  ConsumerState<RoutesScreen> createState() => _RoutesScreenState();
 }
 
-class _RoutesScreenState extends State<RoutesScreen> {
+class _RoutesScreenState extends ConsumerState<RoutesScreen> {
   List<RouteModel> _searchedRoutes = [];
   bool _hasSearched = false;
   bool _isLoading = false;
@@ -34,11 +36,9 @@ class _RoutesScreenState extends State<RoutesScreen> {
     final String fromTitle = from['title']!;
     final String toTitle = to['title']!;
 
-    // Query SQLite local database for the selected route
-    final routes = await RouteDatabaseHelper.instance.getRoutes(
-      fromTitle,
-      toTitle,
-    );
+    // Query via the injected RouteRepository (DIP)
+    final repository = ref.read(routeRepositoryProvider);
+    final routes = await repository.getRoutes(fromTitle, toTitle);
 
     setState(() {
       _hasSearched = true;
@@ -50,9 +50,7 @@ class _RoutesScreenState extends State<RoutesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(
-        0xFF6B7B9E,
-      ), // Background color showing behind Cards
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,

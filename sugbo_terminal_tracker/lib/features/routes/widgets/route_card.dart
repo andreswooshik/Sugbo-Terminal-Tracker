@@ -4,7 +4,7 @@ import '../models/route_model.dart';
 class RouteCard extends StatelessWidget {
   final RouteModel route;
 
-  const RouteCard({Key? key, required this.route}) : super(key: key);
+  const RouteCard({super.key, required this.route});
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +25,8 @@ class RouteCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: route.isFree
-                      ? Colors.green.withOpacity(0.2)
-                      : Colors.purple.withOpacity(0.2),
+                      ? Colors.green.withValues(alpha: 0.2)
+                      : Colors.purple.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(

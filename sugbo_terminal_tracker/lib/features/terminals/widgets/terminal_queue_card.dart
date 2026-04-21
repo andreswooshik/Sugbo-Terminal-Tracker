@@ -5,10 +5,10 @@ class TerminalQueueCard extends StatelessWidget {
   final String updatedStatus;
 
   const TerminalQueueCard({
-    Key? key,
+    super.key,
     required this.waitTime,
     required this.updatedStatus,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +45,10 @@ class TerminalQueueCard extends StatelessWidget {
                   vertical: 10,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.blueAccent.withOpacity(0.15),
+                  color: Colors.blueAccent.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
-                    color: Colors.lightBlueAccent.withOpacity(0.3),
+                    color: Colors.lightBlueAccent.withValues(alpha: 0.3),
                   ),
                 ),
                 child: const Text(

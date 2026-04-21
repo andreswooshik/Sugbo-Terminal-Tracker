@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sugbo_terminal_tracker/features/routes/screens/routes_screen.dart';
-import 'package:sugbo_terminal_tracker/features/terminal_tracker/presentation/screens/home_screen.dart';
 import 'package:sugbo_terminal_tracker/features/terminals/screens/terminals_screen.dart';
 import 'package:sugbo_terminal_tracker/features/schedule/screens/schedule_screen.dart';
 import 'package:sugbo_terminal_tracker/features/savings/screens/savings_screen.dart';
+import 'home_screen.dart';
 import '../widgets/custom_bottom_nav.dart';
 import '../../../../core/theme/app_colors.dart';
 

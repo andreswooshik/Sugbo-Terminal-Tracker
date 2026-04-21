@@ -7,12 +7,12 @@ class NextDepartureTile extends StatelessWidget {
   final Color accentColor;
 
   const NextDepartureTile({
-    Key? key,
+    super.key,
     required this.destination,
     required this.provider,
     required this.estimate,
     required this.accentColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

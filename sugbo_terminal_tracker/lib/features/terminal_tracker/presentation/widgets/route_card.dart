@@ -24,8 +24,8 @@ class RouteCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: AppColors.background.withOpacity(
-                0.2,
+              color: AppColors.background.withValues(
+                alpha: 0.2,
               ), // Faded background color
               borderRadius: BorderRadius.circular(20),
             ),
@@ -97,7 +97,7 @@ class RouteCard extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.accentGreen.withOpacity(0.2),
+                    color: AppColors.accentGreen.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Text(

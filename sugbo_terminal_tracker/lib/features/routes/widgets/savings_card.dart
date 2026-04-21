@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class SavingsCard extends StatelessWidget {
-  const SavingsCard({Key? key}) : super(key: key);
+  const SavingsCard({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.2),
-        border: Border.all(color: Colors.blue.withOpacity(0.3)),
+        color: Colors.blue.withValues(alpha: 0.2),
+        border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(

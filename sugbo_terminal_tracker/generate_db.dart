@@ -39,6 +39,53 @@ void main() {
     )
   ''');
 
+  db.execute('''
+    CREATE TABLE terminals (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      description TEXT NOT NULL,
+      waitTime TEXT NOT NULL,
+      routeCount TEXT NOT NULL,
+      updatedTime TEXT NOT NULL,
+      isFree INTEGER NOT NULL,
+      accentColorHex TEXT NOT NULL
+    )
+  ''');
+
+  db.execute('''
+    CREATE TABLE schedules (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      providerBadge TEXT NOT NULL,
+      routeName TEXT NOT NULL,
+      routeDetails TEXT NOT NULL,
+      priceLabel TEXT NOT NULL,
+      frequencyLabel TEXT NOT NULL,
+      isFree INTEGER NOT NULL,
+      accentColorHex TEXT NOT NULL
+    )
+  ''');
+
+  db.execute('''
+    CREATE TABLE trips (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      route TEXT NOT NULL,
+      timestamp TEXT NOT NULL,
+      provider TEXT NOT NULL,
+      savings TEXT NOT NULL,
+      accentColorHex TEXT NOT NULL,
+      providerColorHex TEXT NOT NULL
+    )
+  ''');
+
+  db.execute('''
+    CREATE TABLE buses (
+      id TEXT PRIMARY KEY,
+      route_id TEXT NOT NULL,
+      last_known_stop TEXT NOT NULL,
+      direction TEXT NOT NULL
+    )
+  ''');
+
   final insertBrtStmt = db.prepare('''
     INSERT INTO brt_stations (station_name, km_marker)
     VALUES (?, ?)
@@ -52,6 +99,56 @@ void main() {
   insertBrtStmt.execute(['IT Park', 11.5]);
 
   insertBrtStmt.dispose();
+
+  final insertTerminalStmt = db.prepare('''
+    INSERT INTO terminals (name, description, waitTime, routeCount, updatedTime, isFree, accentColorHex)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  ''');
+
+  insertTerminalStmt.execute(['IT Park', 'BRT anchor', '~3 min', '3 routes', '2 min ago', 1, 'FF2196F3']);
+  insertTerminalStmt.execute(['SM Seaside', 'BRT + MyBus', '~7 min', '4 routes', '2 min ago', 1, 'FF64FFDA']);
+  insertTerminalStmt.execute(['SM City', 'MyBus main hub', '~5 min', '5 routes', '2 min ago', 0, 'FF64FFDA']);
+  insertTerminalStmt.execute(['Il Corso', 'BRT terminus', '~12 min', '1 route', '2 min ago', 1, 'FF2196F3']);
+  insertTerminalStmt.execute(['SM JMall', 'Mandaue - MyBus', '~8 min', '2 routes', '2 min ago', 0, 'FF64FFDA']);
+  insertTerminalStmt.execute(['Anjo World', 'Love Bus + MyBus', '~15 min', '3 routes', '2 min ago', 1, 'FFFF4081']);
+
+  insertTerminalStmt.dispose();
+
+  final insertScheduleStmt = db.prepare('''
+    INSERT INTO schedules (providerBadge, routeName, routeDetails, priceLabel, frequencyLabel, isFree, accentColorHex)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  ''');
+
+  insertScheduleStmt.execute(['BRT', 'IT Park ↔ Il Corso', '9 stops · ~35 min', 'FREE - Peak only', 'Continuous', 1, 'FF448AFF']);
+  insertScheduleStmt.execute(['MyBus R1', 'JMall ↔ SM City ↔ SM Seaside', '12 stops · ~45 min', '₱30', '30 min (wkday) · 20 min (w... ', 0, 'FF64FFDA']);
+  insertScheduleStmt.execute(['MyBus R2', 'Anjo World ↔ SM Seaside via SRP', '15 stops · ~40 min', '₱30', 'Every 20 min', 0, 'FF64FFDA']);
+  insertScheduleStmt.execute(['MyBus R3', 'Anjo World ↔ SM City / Parkmall', '20 stops · ~60 min', '₱50', 'Every 5-20 min', 0, 'FF64FFDA']);
+  insertScheduleStmt.execute(['MyBus R4', 'SM City ↔ Airport (MCIA)', '8 stops · ~35 min', '₱50', 'Every 30 min', 0, 'FF64FFDA']);
+
+  insertScheduleStmt.dispose();
+
+  final insertTripStmt = db.prepare('''
+    INSERT INTO trips (route, timestamp, provider, savings, accentColorHex, providerColorHex)
+    VALUES (?, ?, ?, ?, ?, ?)
+  ''');
+
+  insertTripStmt.execute(['IT Park → Il Corso', 'Today 8:30 AM', 'BRT', '₱150', 'FF00FF9D', 'FF00FF9D']);
+  insertTripStmt.execute(['SM Seaside → SM JMall', 'Today 9:15 AM', 'MyBus', '₱80', 'FFE040FB', 'FFE040FB']);
+  insertTripStmt.execute(['Il Corso → IT Park', 'Yesterday 6:00 PM', 'BRT', '₱150', 'FF00FF9D', 'FF00FF9D']);
+  insertTripStmt.execute(['Anjo World → SM City', 'Yesterday 7:30 AM', 'MyBus', '₱120', 'FFE040FB', 'FFE040FB']);
+
+  insertTripStmt.dispose();
+
+  final insertBusStmt = db.prepare('''
+    INSERT INTO buses (id, route_id, last_known_stop, direction)
+    VALUES (?, ?, ?, ?)
+  ''');
+
+  insertBusStmt.execute(['BUS-101', 'BRT-1', 'Capitol', 'Southbound']);
+  insertBusStmt.execute(['BUS-102', 'BRT-1', 'Fuente', 'Northbound']);
+  insertBusStmt.execute(['BUS-201', 'MYBUS-R1', 'SM City', 'Southbound']);
+
+  insertBusStmt.dispose();
 
   final insertStmt = db.prepare('''
     INSERT INTO routes (origin, destination, title, subtitle, path, duration, price, comparison, status, isFree)

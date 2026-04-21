@@ -5,8 +5,7 @@ class WaitBoardCard extends StatelessWidget {
   final TerminalWaitModel terminal;
   final VoidCallback? onTap;
 
-  const WaitBoardCard({Key? key, required this.terminal, this.onTap})
-    : super(key: key);
+  const WaitBoardCard({super.key, required this.terminal, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +112,7 @@ class WaitBoardCard extends StatelessWidget {
                                     ),
                                     margin: const EdgeInsets.only(right: 8),
                                     decoration: BoxDecoration(
-                                      color: Colors.green.withOpacity(0.2),
+                                      color: Colors.green.withValues(alpha: 0.2),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: const Text(

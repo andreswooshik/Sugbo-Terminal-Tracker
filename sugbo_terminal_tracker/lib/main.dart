@@ -1,24 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/theme/app_colors.dart';
-import 'features/terminal_tracker/presentation/screens/home_screen.dart';
-import 'package:sugbo_terminal_tracker/features/terminal_tracker/presentation/screens/main_screen.dart';
+import 'features/terminal_tracker/presentation/screens/main_screen.dart';
 
 Future<void> main() async {
   // Ensure Flutter is ready.
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Load environment variables
-  await dotenv.load(fileName: ".env");
-
-  // Initialize Supabase
-  await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL']!,
-    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
-  );
 
   // Setup error boundaries
   FlutterError.onError = (FlutterErrorDetails details) {

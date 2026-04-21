@@ -4,7 +4,7 @@ import '../models/schedule_model.dart';
 class ScheduleCard extends StatelessWidget {
   final ScheduleModel schedule;
 
-  const ScheduleCard({Key? key, required this.schedule}) : super(key: key);
+  const ScheduleCard({super.key, required this.schedule});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class ScheduleCard extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: schedule.accentColor.withOpacity(0.15),
+                        color: schedule.accentColor.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -66,8 +66,8 @@ class ScheduleCard extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: schedule.isFree
-                            ? Colors.green.withOpacity(0.2)
-                            : Colors.purple.withOpacity(0.2),
+                            ? Colors.green.withValues(alpha: 0.2)
+                            : Colors.purple.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
