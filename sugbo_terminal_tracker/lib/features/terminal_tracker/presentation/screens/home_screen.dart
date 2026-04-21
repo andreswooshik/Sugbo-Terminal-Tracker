@@ -53,13 +53,22 @@ class HomeScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text(
-          'SugboTracker',
-          style: TextStyle(
-            fontFamily: 'Righteous',
-            color: Color.fromARGB(255, 243, 243, 243),
-            fontSize: 24,
-          ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text(
+              'Sugbo Tracker',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
+            ),
+            Text(
+              'Cebu transit · real-time',
+              style: TextStyle(color: Colors.white70, fontSize: 12),
+            ),
+          ],
         ),
         actions: [
           IconButton(

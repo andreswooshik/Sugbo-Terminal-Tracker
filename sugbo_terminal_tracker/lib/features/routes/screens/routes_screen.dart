@@ -38,17 +38,9 @@ class RoutesScreen extends StatelessWidget {
         0xFF6B7B9E,
       ), // Background color showing behind Cards
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            // Check if we can pop to avoid black screen, or just let bottom nav handle it
-            if (Navigator.canPop(context)) {
-              Navigator.pop(context);
-            }
-          },
-        ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
