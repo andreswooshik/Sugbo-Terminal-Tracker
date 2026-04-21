@@ -74,6 +74,9 @@ flutter:
   assets:
     - .env
     - assets/routes.db
+    - assets/terminals.db
+    - assets/schedules.db
+    - assets/savings.db
 
 dependency_overrides:
   path_provider_foundation: 2.3.2

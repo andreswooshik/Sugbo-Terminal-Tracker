@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class TotalSavedCard extends StatelessWidget {
-  const TotalSavedCard({Key? key}) : super(key: key);
+  final double totalAmount;
+
+  const TotalSavedCard({Key? key, this.totalAmount = 1240.0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +48,8 @@ class TotalSavedCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         '₱ ',
                         style: TextStyle(
                           color: Color(0xFF00FF9D),
@@ -56,8 +58,8 @@ class TotalSavedCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '1,240',
-                        style: TextStyle(
+                        totalAmount.toStringAsFixed(0),
+                        style: const TextStyle(
                           color: Color(0xFF00FF9D),
                           fontSize: 36,
                           fontWeight: FontWeight.bold,
