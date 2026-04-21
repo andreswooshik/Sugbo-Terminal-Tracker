@@ -1,38 +1,54 @@
 import 'package:flutter/material.dart';
+import '../data/route_database_helper.dart';
 import '../models/route_model.dart';
 import '../widgets/location_input_card.dart';
 import '../widgets/route_card.dart';
 import '../widgets/savings_card.dart';
 
-class RoutesScreen extends StatelessWidget {
+class RoutesScreen extends StatefulWidget {
   const RoutesScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    // Mock data based on the screenshot
-    final List<RouteModel> mockRoutes = [
-      RouteModel(
-        title: 'FREE NOW',
-        subtitle: 'BRT Love Bus - until 9:00 AM',
-        path: 'IT Park → Ayala → Fuente → Seaside → Il Corso',
-        duration: '9 stops · ~35-40 min',
-        price: '₱0.00',
-        comparison: 'vs ₱150-200 Grab',
-        status: 'Next bus: ~4 min',
-        isFree: true,
-      ),
-      RouteModel(
-        title: 'PAID',
-        subtitle: 'BRT - 9:01 AM - 4:59 PM window',
-        path: 'IT Park → Ayala → Fuente → Seaside → Il Corso',
-        duration: 'Same route - same 9 stops · ~35-40 min',
-        price: 'Regular fare',
-        comparison: '',
-        status: 'Every ~5-10 min during day',
-        isFree: false,
-      ),
-    ];
+  State<RoutesScreen> createState() => _RoutesScreenState();
+}
 
+class _RoutesScreenState extends State<RoutesScreen> {
+  List<RouteModel> _searchedRoutes = [];
+  bool _hasSearched = false;
+  bool _isLoading = false;
+
+  void _onSearch(Map<String, String>? from, Map<String, String>? to) async {
+    if (from == null || to == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select both Origin and Destination'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final String fromTitle = from['title']!;
+    final String toTitle = to['title']!;
+
+    // Query SQLite local database for the selected route
+    final routes = await RouteDatabaseHelper.instance.getRoutes(
+      fromTitle,
+      toTitle,
+    );
+
+    setState(() {
+      _hasSearched = true;
+      _isLoading = false;
+      _searchedRoutes = routes;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(
         0xFF6B7B9E,
@@ -65,29 +81,45 @@ class RoutesScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
-            const LocationInputCard(),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  '2 routes found',
-                  style: TextStyle(color: Colors.white70),
-                ),
-                Text(
-                  'Save up to ₱150 vs Grab',
-                  style: TextStyle(
-                    color: Colors.greenAccent[400],
-                    fontWeight: FontWeight.bold,
+            LocationInputCard(onSearch: _onSearch),
+            if (_isLoading) ...[
+              const SizedBox(height: 48),
+              const Center(child: CircularProgressIndicator()),
+            ] else if (_hasSearched) ...[
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${_searchedRoutes.length} routes found',
+                    style: const TextStyle(color: Colors.white70),
                   ),
+                  Text(
+                    'Save up to ₱150 vs Grab',
+                    style: TextStyle(
+                      color: Colors.greenAccent[400],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              ..._searchedRoutes
+                  .map((route) => RouteCard(route: route))
+                  .toList(),
+              const SizedBox(height: 8),
+              const SavingsCard(),
+              const SizedBox(height: 24),
+            ] else ...[
+              const SizedBox(height: 48),
+              const Center(
+                child: Text(
+                  'Select origin and destination\nto view available routes',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            ...mockRoutes.map((route) => RouteCard(route: route)).toList(),
-            const SizedBox(height: 8),
-            const SavingsCard(),
-            const SizedBox(height: 24),
+              ),
+            ],
           ],
         ),
       ),

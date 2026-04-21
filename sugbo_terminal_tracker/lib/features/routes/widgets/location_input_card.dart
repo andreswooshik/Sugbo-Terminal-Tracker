@@ -1,7 +1,33 @@
 import 'package:flutter/material.dart';
 
-class LocationInputCard extends StatelessWidget {
-  const LocationInputCard({Key? key}) : super(key: key);
+class LocationInputCard extends StatefulWidget {
+  final void Function(Map<String, String>?, Map<String, String>?)? onSearch;
+
+  const LocationInputCard({Key? key, this.onSearch}) : super(key: key);
+
+  @override
+  State<LocationInputCard> createState() => _LocationInputCardState();
+}
+
+class _LocationInputCardState extends State<LocationInputCard> {
+  final List<Map<String, String>> _locations = [
+    {'title': 'IT Park', 'subtitle': 'Lahug, Cebu City'},
+    {'title': 'Il Corso', 'subtitle': 'South Road Properties(SRP), Cebu'},
+    {'title': 'SM City Cebu', 'subtitle': 'North Reclamation Area, Cebu City'},
+    {'title': 'Ayala Center', 'subtitle': 'Cebu Business Park, Cebu City'},
+    {'title': 'South Bus Terminal', 'subtitle': 'N. Bacalso Avenue, Cebu City'},
+    {'title': 'North Bus Terminal', 'subtitle': 'Subangdaku, Mandaue City'},
+  ];
+
+  Map<String, String>? _selectedFrom;
+  Map<String, String>? _selectedTo;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedFrom = null; // Start blank
+    _selectedTo = null; // Start blank
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,22 +39,29 @@ class LocationInputCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          _buildInputField('FROM', 'IT Park', 'Lahug, Cebu City', Colors.blue),
+          _buildDropdownField('FROM', _selectedFrom, Colors.blue, (value) {
+            setState(() {
+              if (value != null) _selectedFrom = value;
+            });
+          }),
           const SizedBox(height: 8),
           const Icon(Icons.swap_vert, color: Colors.blue, size: 20),
           const SizedBox(height: 8),
-          _buildInputField(
-            'TO',
-            'Il Corso',
-            'South Road Properties(SRP), Cebu',
-            Colors.green,
-          ),
+          _buildDropdownField('TO', _selectedTo, Colors.green, (value) {
+            setState(() {
+              if (value != null) _selectedTo = value;
+            });
+          }),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             height: 48,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                if (widget.onSearch != null) {
+                  widget.onSearch!(_selectedFrom, _selectedTo);
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF00A2FF),
                 shape: RoundedRectangleBorder(
@@ -50,11 +83,11 @@ class LocationInputCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInputField(
+  Widget _buildDropdownField(
     String label,
-    String title,
-    String subtitle,
+    Map<String, String>? selectedValue,
     Color dotColor,
+    ValueChanged<Map<String, String>?> onChanged,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +95,7 @@ class LocationInputCard extends StatelessWidget {
         Text(label, style: const TextStyle(color: Colors.grey, fontSize: 10)),
         const SizedBox(height: 4),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(
             color: const Color(0xFF2C313D),
             borderRadius: BorderRadius.circular(8),
@@ -73,21 +106,50 @@ class LocationInputCard extends StatelessWidget {
               Icon(Icons.circle, color: dotColor, size: 10),
               const SizedBox(width: 8),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<Map<String, String>>(
+                    value: selectedValue,
+                    hint: Text(
+                      label == 'FROM'
+                          ? 'Select Origin...'
+                          : 'Select Destination...',
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
                     ),
-                    Text(
-                      subtitle,
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
+                    isExpanded: true,
+                    dropdownColor: const Color(0xFF3B404D),
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Colors.grey,
                     ),
-                  ],
+                    style: const TextStyle(color: Colors.white),
+                    items: _locations.map((location) {
+                      return DropdownMenuItem<Map<String, String>>(
+                        value: location,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              location['title']!,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                            Text(
+                              location['subtitle']!,
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: onChanged,
+                  ),
                 ),
               ),
             ],
