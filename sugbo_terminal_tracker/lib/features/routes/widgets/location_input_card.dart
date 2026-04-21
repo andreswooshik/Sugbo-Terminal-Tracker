@@ -17,7 +17,12 @@ class LocationInputCard extends StatelessWidget {
           const SizedBox(height: 8),
           const Icon(Icons.swap_vert, color: Colors.blue, size: 20),
           const SizedBox(height: 8),
-          _buildInputField('TO', 'Il Corso', 'Mactan, Cebu', Colors.green),
+          _buildInputField(
+            'TO',
+            'Il Corso',
+            'South Road Properties(SRP), Cebu',
+            Colors.green,
+          ),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,

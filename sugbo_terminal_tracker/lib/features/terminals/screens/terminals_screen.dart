@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/terminal_wait_model.dart';
 import '../widgets/wait_board_card.dart';
+import 'terminal_detail_screen.dart';
 
 class TerminalsScreen extends StatelessWidget {
   const TerminalsScreen({Key? key}) : super(key: key);
@@ -142,7 +143,21 @@ class TerminalsScreen extends StatelessWidget {
 
             // The list of terminals WaitBoard
             ...mockTerminals
-                .map((terminal) => WaitBoardCard(terminal: terminal))
+                .map(
+                  (terminal) => WaitBoardCard(
+                    terminal: terminal,
+                    onTap: () {
+                      // Pass terminal details directly to the detail screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              TerminalDetailScreen(terminal: terminal),
+                        ),
+                      );
+                    },
+                  ),
+                )
                 .toList(),
 
             const SizedBox(height: 24), // Padding at bottom
