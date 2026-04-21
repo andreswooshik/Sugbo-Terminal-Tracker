@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/models/terminal_model.dart';
 import 'terminal_card.dart';
 
 class TerminalGrid extends StatelessWidget {
-  final List<Terminal> terminals;
+  final List<TerminalUiModel> terminals;
 
   const TerminalGrid({super.key, required this.terminals});
 

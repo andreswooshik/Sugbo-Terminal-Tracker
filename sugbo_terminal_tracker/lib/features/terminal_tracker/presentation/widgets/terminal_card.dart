@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/models/terminal_model.dart';
 
 class TerminalCard extends StatelessWidget {
-  final Terminal terminal;
+  final TerminalUiModel terminal;
 
   const TerminalCard({super.key, required this.terminal});
 
