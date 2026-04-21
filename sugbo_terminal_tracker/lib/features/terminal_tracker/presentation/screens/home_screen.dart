@@ -11,7 +11,9 @@ import '../widgets/route_list.dart';
 import '../widgets/custom_bottom_nav.dart';
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+  final bool showBottomNav;
+
+  const HomeScreen({super.key, this.showBottomNav = true});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -68,10 +70,12 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.notifications_none,
-                          color: AppColors.textPrimary),
+                      icon: const Icon(
+                        Icons.notifications_none,
+                        color: AppColors.textPrimary,
+                      ),
                       onPressed: () {},
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -105,7 +109,9 @@ class HomeScreen extends ConsumerWidget {
                   loading: () => const Center(
                     child: Padding(
                       padding: EdgeInsets.all(40.0),
-                      child: CircularProgressIndicator(color: AppColors.accentGreen),
+                      child: CircularProgressIndicator(
+                        color: AppColors.accentGreen,
+                      ),
                     ),
                   ),
                   error: (error, stack) => Center(
@@ -129,8 +135,9 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
       ),
-      bottomNavigationBar: const CustomBottomNav(),
+      bottomNavigationBar: showBottomNav
+          ? CustomBottomNav(onTap: (_) {}, selectedIndex: 0)
+          : null,
     );
   }
 }
-

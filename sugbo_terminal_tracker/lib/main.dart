@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/theme/app_colors.dart';
 import 'features/terminal_tracker/presentation/screens/home_screen.dart';
+import 'package:sugbo_terminal_tracker/features/terminal_tracker/presentation/screens/main_screen.dart';
 
 Future<void> main() async {
   // Ensure Flutter is ready.
@@ -33,8 +34,8 @@ Future<void> main() async {
   runApp(
     // Add ProviderScope for Riverpod state management, logging only in debug mode
     ProviderScope(
-      observers: kDebugMode ? const [StateLogger()] : const [], 
-      child: const MyApp()
+      observers: kDebugMode ? const [StateLogger()] : const [],
+      child: const MyApp(),
     ),
   );
 }
@@ -84,11 +85,18 @@ class MyApp extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                    const Icon(
+                      Icons.error_outline,
+                      color: Colors.red,
+                      size: 48,
+                    ),
                     const SizedBox(height: 16),
                     const Text(
                       'An unexpected error occurred.',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     if (kDebugMode)
@@ -105,8 +113,7 @@ class MyApp extends StatelessWidget {
         };
         return child ?? const SizedBox.shrink();
       },
-      home: const HomeScreen(),
+      home: const MainScreen(),
     );
   }
 }
-
