@@ -50,9 +50,27 @@ class _LocationInputCardState extends State<LocationInputCard> {
               if (value != null) _selectedFrom = value;
             });
           }),
-          const SizedBox(height: 8),
-          const Icon(Icons.swap_vert, color: Colors.blue, size: 20),
-          const SizedBox(height: 8),
+          // Increase top gap because the 'TO' label below has its own text height.
+          const SizedBox(height: 18),
+          // Swap Button
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                final temp = _selectedFrom;
+                _selectedFrom = _selectedTo;
+                _selectedTo = temp;
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: const BoxDecoration(
+                color: Color(0xFF00A2FF),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.swap_vert, color: Colors.white, size: 24),
+            ),
+          ),
+          // Removed bottom gap so it directly touches the 'TO' label, perfectly centering it!
           _buildDropdownField('TO', _selectedTo, Colors.green, (value) {
             setState(() {
               if (value != null) _selectedTo = value;
